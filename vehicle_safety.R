@@ -1,12 +1,13 @@
-install.packages("e1071")
-install.packages("caret")
-
+#install and load necessary packages
 library(e1071)
 library(caret)
-library(ggplot2, lattice)
+library(lattice)
+library(ggplot2)
+library(mice)
+library(VIM)
 
 # Reading the data set into R
-vs = read.csv("vehicle_safety_NASS2010_2000_2012 - Copy.csv")
+vs = read.csv("vehicle_safety_NASS2010_2000_2012.csv")
 
 # NA value removal from output variable(OA_MAIS)
 nrow(vs[!is.na(vs$OA_MAIS),]) # gives the number of records for which OA_MAIS is NULL
@@ -28,10 +29,7 @@ vs$OA_MAIS = as.factor(vs$OA_MAIS)
 vs$OA_MANUSE = as.factor(vs$OA_MANUSE)
 
 #Imputation of missing values
-#install.packages("mice")
-i#nstall.packages("VIM")
-library(mice)
-library(VIM)
+
 md.pattern(vs)
 #Plotting missing values in the table
 aggr_plot <- aggr(vs, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, labels=names(vs), cex.axis=.7, gap=3, ylab=c("Histogram of missing data","Pattern"))
@@ -73,8 +71,6 @@ set.seed(2)
 id = sample(2,nrow(vs_imputed), prob  = c(0.7,0.3), replace = TRUE)
 vs_train = vs_imputed[id == 1,]
 vs_test = vs_imputed[id == 2,]
-
-
 
 # making of the model
 vs_model = naiveBayes(OA_MAIS~ GV_CURBWGT + GV_DVLAT + GV_DVLONG + GV_ENERGY + GV_LANES + GV_MODELYR + GV_OTVEHWGT + GV_SPLIMIT + GV_WGTCDTR + OA_AGE + OA_BAGDEPLY + OA_HEIGHT + OA_MANUSE + OA_SEX + OA_WEIGHT +VE_GAD1 + VE_ORIGAVTW + VE_WHEELBAS + VE_PDOF_TR + GV_FOOTPRINT, vs_train)
