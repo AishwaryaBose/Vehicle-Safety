@@ -1,4 +1,4 @@
-# Vehicle-Safety
+Predict injury levels of vehicle occupants using Bayesian Models 
 
 INTRODUCTION:
 
